@@ -54,7 +54,9 @@ export default App;
 Root components is on top of the tree and will be the first thing that gets rendered
 let's say App.js is the root component, if you have a navbar, the navbar needs to get nested in App.js
 Here a image to show you a example
+
 ![alt text](<Screenshot 2026-05-18 162705.png>)
+
 type sfc and then press tap in for example Navbar.js to instantly create a basic stateless functional component
 
 # adding styles
@@ -132,3 +134,83 @@ const Home  = () => {
 }
 export default Home;
 ```
+
+# React developer tools
+install React developer tools as an extension for your browser for more information when you inspect the page
+
+# Outputting list
+example below:
+```
+import { useState } from "react"
+
+const Home  = () => {
+  const [blogs, setBlogs] = useState([
+    { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
+    { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
+    { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
+  ]);
+
+    return ( 
+        <div className='home'>
+            {blogs.map((blog) =>(
+                <div className="blog-preview" key={blog.id}>
+                    <h2>{blog.title}</h2>
+                    <p>Written by {blog.author}</p>
+
+                </div>
+
+            ))}
+        </div>
+     );
+}
+export default Home;
+
+```
+# Props / reusuing components
+this gets used to make a piece of code you use multiple times reusable (think of pyton defs/classes)
+in this example you will see 2 snippets, snippet one one Home.js, that uses Bloglist.js
+
+Home.js
+```
+import { useState } from "react"
+import BlogList from "./BlogList";
+
+const Home  = () => {
+  const [blogs, setBlogs] = useState([
+    { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
+    { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
+    { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
+  ]);
+    return ( 
+        <div className='home'>
+            <BlogList blogs={blogs} title="all blogs!"></BlogList>
+            // if you only want mario's data
+            <BlogList blogs={blogs.filter((blog) => blog.author === 'mario')} title="Mario's blogs!"></BlogList>
+        </div>
+     );
+}
+export default Home;
+
+```
+
+Bloglist.js
+```
+const BlogList = ({blogs, title}) => {
+    return ( 
+        <div className="blog-list">
+            <h2>{title}</h2>
+            {blogs.map((blog) =>(
+            <div className="blog-preview" key={blog.id}>
+                <h2>{blog.title}</h2>
+                <p>Written by {blog.author}</p>
+            </div>
+        ))}
+        </div>
+    );
+}
+export default BlogList;
+
+```
+
+
+
