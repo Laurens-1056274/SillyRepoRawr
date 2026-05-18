@@ -18,3 +18,41 @@ export default App;
 ```
 
 # Dynamic values in templates
+only thing to note is that you can not use booleans and objects as variables in template
+Example of code using both
+
+```
+import './App.css';
+
+function App() {
+  const title = 'mrrp mrow nyaa!';
+  const sillycounter = 9000;
+  const link = 'https://github.com/';
+  
+  return (
+    <div className="App">
+      <div className="content">
+        <h1>{title}</h1>
+        <p>acted silly: {sillycounter}</p>
+
+        <p>{10}</p>
+        <p>{'haiiii'}</p>
+        <p>{[1,2,3,4,5]}</p>
+        <p>{Math.random() * 10}</p>
+
+        <a href={link}>github link</a>
+      </div>
+    </div>
+  );
+}
+
+export default App;
+
+```
+# Multiple components
+(tip install Simple React Snippets (vscode extension))
+Root components is on top of the tree and will be the first thing that gets rendered
+let's say App.js is the root component, if you have a navbar, the navbar needs to get nested in App.js
+Here a image to show you a example
+![alt text](<Screenshot 2026-05-18 162705.png>)
+type sfc and then press tap in for example Navbar.js to instantly create a basic stateless functional component
