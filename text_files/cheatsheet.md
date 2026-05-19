@@ -338,3 +338,66 @@ some of the endpoints the json server will provide you with:
     /blogs          POST        Add a new blog
     /blogs          DELETE      Delete a blog
 
+# Fetching data with useEffect
+here a example of fetching data using useEffect (to run this dont forget to use the command )
+```
+import { useEffect, useState } from "react";
+import BlogList from "./BlogList";
+
+const Home = () => {
+  const [blogs, setBlogs] = useState(null)
+
+  useEffect(() => {
+    fetch('http://localhost:8000/blogs')
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        setBlogs(data);
+      })
+  }, [])
+
+  return (
+    <div className="home">
+      {blogs && <BlogList blogs={blogs} />}
+    </div>
+  );
+}
+ 
+export default Home;
+```
+# Condintial laoding message
+it is nice do display a message while your data is getting fetched, so the user knows that something is loading
+
+The lines ```const [isPending, setIsPending] = useState(true);```, ```setIsPending(false)``` and
+```{isPending && <div>Loading...</div>}``` are the important lines, beneath the whole code
+
+```
+import { useEffect, useState } from "react";
+import BlogList from "./BlogList";
+
+const Home = () => {
+  const [blogs, setBlogs] = useState(null)
+  const [isPending, setIsPending] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/blogs')
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        setBlogs(data);
+        setIsPending(false)
+      })
+  }, [])
+
+  return (
+    <div className="home">
+      {isPending && <div>Loading...</div>}
+      {blogs && <BlogList blogs={blogs} title="all blogs!" />}
+    </div>
+  );
+}
+ 
+export default Home;
+```
