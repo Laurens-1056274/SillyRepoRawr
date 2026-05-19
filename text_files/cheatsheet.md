@@ -538,3 +538,42 @@ function App() {
 export default App;
 
 ```
+# Exact Match Routes
+If you want the route to check if it is exactly how it is written, use ```exact path``` instead of ```path```
+example of code using a exact route
+```
+  <div className="content">
+    <Switch>
+      <Route exact path="/">
+        <Home></Home>
+      </Route>
+
+      <Route exact path="/create">
+        <Create></Create>
+      </Route>
+    </Switch>
+  </div>
+```
+## IMPORTANT!!!
+this code still makes request to the server, we have to use special react router links if we don't want that
+
+# Router links
+Beneath a example of how to use router links
+```
+import { Link } from 'react-router-dom';
+
+const Navbar = () => {
+    return ( 
+        <nav className='navbar'>
+            <h1>My silly little blog</h1>
+            <div className='links'>
+                <Link to = "/">Home</Link>
+                <Link to = "/create">New blog</Link>
+            </div>
+        </nav>
+     );
+}
+export default Navbar;
+```
+This code is in Navbar.js. before router links it used <a> instead of <Link>
+now the code doesnt make a request to the server
