@@ -211,6 +211,130 @@ const BlogList = ({blogs, title}) => {
 export default BlogList;
 
 ```
+# functions as props
+This code deletes a blog when the button gets clicked
 
+Home.js
+```
+import { useState } from "react"
+import BlogList from "./BlogList";
 
+const Home  = () => {
+  const [blogs, setBlogs] = useState([
+    { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
+    { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
+    { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
+  ]);
+  // doing it like this makes it so the data doesnt get changed
+  const hanleDelete = (id) => {
+    const newBlogs = blogs.filter(blog => blog.id !== id);
+    setBlogs(newBlogs);
+
+  }
+    return ( 
+        <div className='home'>
+            <BlogList blogs={blogs} title="all blogs!" hanleDelete={hanleDelete}></BlogList>
+        </div>
+     );
+}
+export default Home;
+```
+
+Bloglist.js
+```
+const BlogList = ({blogs, title, hanleDelete}) => {
+    return ( 
+        <div className="blog-list">
+            <h2>{title}</h2>
+            {blogs.map((blog) =>(
+            <div className="blog-preview" key={blog.id}>
+                <h2>{blog.title}</h2>
+                <p>Written by {blog.author}</p>
+                <button onClick={() => hanleDelete(blog.id)}>delete blog</button>
+            </div>
+        ))}
+        </div>
+    );
+}
+export default BlogList;
+```
+# UseEffect (the basics)
+useffect hook is a way too run code on every render. You need to import on the top of the file just like useState
+example:
+```
+import { useEffect } from "react"
+```
+This can be used for example fetching data
+
+# useEffect Dependencies
+dependency array gets used when you dont want the code to run after EVERY single render. maybe only after certain renders
+## If you want to run it everytime:
+```
+    useEffect(() => {
+        // be carefull of not making infinite loops while using this
+        console.log('use effect ran')
+    });
+```
+## If you want to run it only after first initial render
+```
+    useEffect(() => {
+        // be carefull of not making infinite loops while using this
+        console.log('use effect ran')
+    }, []);
+    
+```
+## If you want to run it after value changes
+```
+    useEffect(() => {
+        // be carefull of not making infinite loops while using this
+        console.log('use effect ran')
+    }, [name]);
+```
+
+### code used for userEffect dependancies
+```
+import { useState, useEffect } from "react"
+import BlogList from "./BlogList";
+
+const Home  = () => {
+  const [blogs, setBlogs] = useState([
+    { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
+    { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
+    { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
+  ]);
+
+  const [name, setName] = useState('Mario')
+
+  const hanleDelete = (id) => {
+    const newBlogs = blogs.filter(blog => blog.id !== id);
+    setBlogs(newBlogs)};
+
+    useEffect(() => {
+        // be carefull of not making infinite loops while using this
+        console.log('use effect ran')
+        console.log(name)
+    }, [name]);
+
+    return ( 
+        <div className='home'>
+            <BlogList blogs={blogs} title="all blogs!" hanleDelete={hanleDelete}></BlogList>
+            <button onClick={() => setName('Luigi')}>change name inside button</button>
+            <p>{name}</p>
+        </div>
+     );
+}
+export default Home;
+```
+# Using Json server
+create data folder containing db.json in the root folder, then run the follwoing commands in the terminal
+(I have rawr because it is that file, oopies >///<)
+```
+npx json-server --watch rawr/data/db.json --port 8000
+```
+some of the endpoints the json server will provide you with:
+
+    /blogs          GET         Fetch all blogs
+    /blogs/{id}     GET         Fetch a single blog
+    /blogs          POST        Add a new blog
+    /blogs          DELETE      Delete a blog
 
