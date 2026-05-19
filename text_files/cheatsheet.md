@@ -401,3 +401,140 @@ const Home = () => {
  
 export default Home;
 ```
+# Handling fetch errors
+the code beneath will display a error message if there is a error, and make the loading dissapear:
+```
+import { useEffect, useState } from "react";
+import BlogList from "./BlogList";
+
+const Home = () => {
+  const [blogs, setBlogs] = useState(null)
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    fetch('http://localhost:8000/blogs')
+      .then(res => {
+
+        if (!res.ok) {
+          throw Error('could not fetch data for that resource QwQ')
+        };
+        return res.json();
+      })
+      .then(data => {
+        setBlogs(data);
+        setIsPending(false);
+        setError(null);
+      })
+      .catch(err => {
+        setIsPending(false);
+        setError(err.message);
+      })
+  }, [])
+
+  return (
+    <div className="home">
+      {error && <div>{error}</div>}
+      {isPending && <div>Loading...</div>}
+      {blogs && <BlogList blogs={blogs} title="all blogs!" />}
+    </div>
+  );
+}
+ 
+export default Home;
+```
+# Making custom hooks
+this is the way too save code you are gonna re-use in different files (for example error handlings)
+custum hooks need to start with 'use' for example:
+```
+const useFetch = () => {}
+```
+
+beneath here there will be 2 snippets of code, snippet one will be the code i will re-use
+code 2 will be the file i import the re-usable code
+
+code 1
+```
+import { useState, useEffect } from "react";
+
+const useFetch = (url) => {
+    const [data, setData] = useState(null);
+    const [isPending, setIsPending] = useState(true);
+    const [error, setError] = useState(null);
+    useEffect(() => {
+        fetch(url)
+        .then(res => {
+
+            if (!res.ok) {
+            throw Error('could not fetch data for that resource QwQ')
+            };
+            return res.json();
+        })
+        .then(data => {
+            setData(data);
+            setIsPending(false);
+            setError(null);
+        })
+        .catch(err => {
+            setIsPending(false);
+            setError(err.message);
+        })
+    }, [url])
+    return {data, isPending, error}
+}
+export default useFetch;
+```
+
+code 2
+```
+import { useEffect, useState } from "react";
+import BlogList from "./BlogList";
+import useFetch from "./useFetch";
+
+const Home = () => {
+  const {data: blogs, isPending, error} = useFetch('http://localhost:8000/blogs')
+  return (
+    <div className="home">
+      {error && <div>{error}</div>}
+      {isPending && <div>Loading...</div>}
+      {blogs && <BlogList blogs={blogs} title="woomy ^w^" />}
+    </div>
+  );
+}
+ 
+export default Home;
+
+```
+# The React router
+to use this we need to installreact router package using:
+@5 means version 5 (the version the tutorial uses)
+```
+npm install react-router-dom@5
+```
+here is a basic App.js with a route that when you go to "/" displays Home.js
+```
+import Navbar from './Navbar';
+import Home from './Home';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+
+function App() {
+
+  return (
+    <Router>
+    <div className="App">
+      <Navbar></Navbar>
+      <div className="content">
+        <Switch>
+          <Route path="/">
+            <Home></Home>
+          </Route>
+        </Switch>
+      </div>
+    </div>
+    </Router>
+  );
+}
+
+export default App;
+
+```
