@@ -577,3 +577,86 @@ export default Navbar;
 ```
 This code is in Navbar.js. before router links it used <a> instead of <Link>
 now the code doesnt make a request to the server
+
+# useEffect cleanup
+you want the useFetch to stop running when you quickly swap to a different page. to do this we use a combination of a abort controller and a useEffect hook
+```
+    import { useState, useEffect } from "react";
+
+    const useFetch = (url) => {
+        const [data, setData] = useState(null);
+        const [isPending, setIsPending] = useState(true);
+        const [error, setError] = useState(null);
+
+        useEffect(() => {
+            const abortCont = new AbortController();
+
+            fetch(url, {signal: abortCont.signal})
+            .then(res => {
+                if (!res.ok) {
+                throw Error('could not fetch data for that resource QwQ')
+                };
+                return res.json();
+            })
+            .then(data => {
+                setData(data);
+                setIsPending(false);
+                setError(null);
+            })
+            .catch(err => {
+                if (err.name === 'AbortError') {
+                    console.log('fetch aborted');
+                } else {
+                    setIsPending(false);
+                    setError(err.message);
+                }
+            })
+            return () => abortCont.abort();
+        }, [url])
+        return {data, isPending, error}
+    }
+    export default useFetch;
+```
+# Route parameters
+a route parameter is the changable part in the route. it's like a variable in a route
+the route in App.js will ook something like this:  (after the : is a name you can give it, in this case i called it id)
+```
+  <Route exact path="/blogs/:id">
+    <Create></Create>
+  </Route>
+```
+BlogDetails (extra info over said blog) looks like this:
+```
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+
+const BlogDetails = () => {
+    const {id} = useParams();
+    return ( 
+        <div className="blog-details">
+            <h2>Blog Details - {id}</h2>
+        </div>
+     );
+}
+export default BlogDetails;
+```
+To make the BlogList acces BlogDetails.js by using a link. code looks like this (BlogList.js)
+```
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+
+const BlogList = ({blogs, title}) => {
+    return ( 
+        <div className="blog-list">
+            <h2>{title}</h2>
+            {blogs.map((blog) =>(
+            <div className="blog-preview" key={blog.id}>
+                <Link to={`/blogs/${blog.id}`}>
+                    <h2>{blog.title}</h2>
+                    <p>Written by {blog.author}</p>
+                </Link>
+            </div>
+        ))}
+        </div>
+    );
+}
+export default BlogList;
+```

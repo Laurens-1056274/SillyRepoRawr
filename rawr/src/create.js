@@ -1,9 +1,8 @@
 const Create = () => {
     return ( 
-        <dif className="create">
+        <div className="create">
             <h2>Add a new Block</h2>
-        </dif>
+        </div>
      );
 }
- 
 export default Create;
