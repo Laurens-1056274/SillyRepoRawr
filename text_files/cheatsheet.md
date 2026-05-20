@@ -813,3 +813,86 @@ const Create = () => {
 }
 export default Create;
 ```
+# Programmatic Redirects
+To use rederects you can use useHistory
+you don't need a lot of code for this, you basically just need
+
+on top of the file
+```
+import { useHistory } from "react-router-dom";
+```
+
+in where you create the constants
+```
+const history = useHistory();
+```
+
+and last but not least when you want to send it to the page ('/' = main page)
+```
+history.push('/');
+```
+
+# Deleting blogs
+In this case the const handeclick is what deletes the blog
+```
+import { useParams, useHistory } from "react-router-dom";
+import useFetch from "./useFetch";
+
+
+const BlogDetails = () => {
+  const { id } = useParams();
+  const { data: blog, error, isPending } = useFetch('http://localhost:8000/blogs/' + id);
+  const history = useHistory();
+
+  const handleClick = () => {
+    fetch('http://localhost:8000/blogs/'+blog.id, {
+        method: 'DELETE'
+    }).then( () => {
+        history.push('/');
+    })
+  }
+
+  return (
+    <div className="blog-details">
+      { isPending && <div>Loading...</div> }
+      { error && <div>{ error }</div> }
+      { blog && (
+        <article>
+          <h2>{ blog.title }</h2>
+          <p>Written by { blog.author }</p>
+          <div>{ blog.body }</div>
+          <button onClick={handleClick}>delete</button>
+        </article>
+      )}
+    </div>
+  );
+}
+ 
+export default BlogDetails;
+```
+# 404 Pages and next steps
+first create a NotFound.js containing this (at the minimum):
+```
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
+
+const NotFOund = () => {
+    return ( 
+        <div className="not-found">
+            <h2>sowwy </h2>
+            <p>That page cannot be found</p>
+            <Link to="/">Back to the homepage...</Link>
+        </div>
+     );
+}
+export default NotFOund;
+```
+
+Then, in App.js, write
+```
+  <Route path="*">
+    <NotFOund></NotFOund>
+  </Route>
+```
+
+IMPORTANT!!! this route need to be the bottom one, else it always goes to this page first.
+
