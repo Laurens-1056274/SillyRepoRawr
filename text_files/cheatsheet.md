@@ -660,3 +660,156 @@ const BlogList = ({blogs, title}) => {
 }
 export default BlogList;
 ```
+# Reusing custom hooks
+Here a example where i re-use the useFetch
+```
+import { useParams } from "react-router-dom";
+import useFetch from "./useFetch";
+
+const BlogDetails = () => {
+  const { id } = useParams();
+  const { data: blog, error, isPending } = useFetch('http://localhost:8000/blogs/' + id);
+
+  return (
+    <div className="blog-details">
+      { isPending && <div>Loading...</div> }
+      { error && <div>{ error }</div> }
+      { blog && (
+        <article>
+          <h2>{ blog.title }</h2>
+          <p>Written by { blog.author }</p>
+          <div>{ blog.body }</div>
+        </article>
+      )}
+    </div>
+  );
+}
+ 
+export default BlogDetails;
+```
+# Controlled input forms
+this is the way to save the user data in a state (for example to save their username when they put it in a textfield)
+(this one does not submit anything yet, this only tracks)
+```
+import { useState } from "react";
+
+const Create = () => {
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+    const [author, setAuthor] = useState('mario');
+    return ( 
+        <div className="create">
+            <h2>Add a new Block</h2>
+            <form>
+                <label>Blog Title:</label>
+                <input 
+                    type='text'
+                    required
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                ></input>
+
+                <label>Blog Body:</label>
+                <textarea
+                    required
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                ></textarea>
+
+                <label>Blog Author</label>
+                <select 
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                >
+                    <option value='Mario'>mario</option>
+                    <option value='Yoshi'>yoshi</option>
+                </select>
+                <button>Add block</button>
+                <p>{title}</p>
+                <p>{body}</p>
+                <p>{author}</p>
+            </form>
+        </div>
+     );
+}
+export default Create;
+```
+
+# Submitting a form
+there are multiple ways to do this, you can either attach a click event to the submit button, or
+react to the submit event
+the only thing that changes is this (this however does not post the data anyware)
+```
+  const handeSubmit = (e) => {
+      e.preventDefault();
+      const blog = {title, body, author};
+      console.log(blog);
+  };
+  return ( 
+      <div className="create">
+          <h2>Add a new Block</h2>
+          <form onSubmit={handeSubmit}>
+```
+
+# Making a POST request
+this is a example of posting data. The content data in this case is JSON
+```
+import { useState } from "react";
+
+const Create = () => {
+    const [title, setTitle] = useState('');
+    const [body, setBody] = useState('');
+    const [author, setAuthor] = useState('mario');
+    const [isPending, setIsPending] = useState(false);
+
+    const handeSubmit = (e) => {
+        e.preventDefault();
+        const blog = {title, body, author};
+        setIsPending(true);
+        fetch('http://localhost:8000/blogs', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(blog)
+        }).then(() =>{
+            console.log('new blog added');
+            setIsPending(false);
+        })
+    };
+    return ( 
+        <div className="create">
+            <h2>Add a new Block</h2>
+            <form onSubmit={handeSubmit}>
+                <label>Blog Title:</label>
+                <input 
+                    type='text'
+                    required
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                ></input>
+
+                <label>Blog Body:</label>
+                <textarea
+                    required
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                ></textarea>
+
+                <label>Blog Author</label>
+                <select 
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                >
+                    <option value='Mario'>mario</option>
+                    <option value='Yoshi'>yoshi</option>
+                </select>
+                { !isPending && <button>Add blog</button>}
+                { isPending && <button disabled>Add blog....</button>}
+                <p>{title}</p>
+                <p>{body}</p>
+                <p>{author}</p>
+            </form>
+        </div>
+     );
+}
+export default Create;
+```
