@@ -1,0 +1,1 @@
+To use supabase, you need to connect it to a framework. In this instance I will use Vue
