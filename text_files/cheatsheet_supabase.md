@@ -2,16 +2,19 @@
 To use Supabase, you need to connect it to a framework. In this instance I will use Vue
 
 # Table of Contents
+# Table of Contents
+
 - [Use Supabase with Vue](#use-supabase-with-vue)
   - [1. Create Supabase project](#1-create-supabase-project)
   - [2. Set up your database](#2-set-up-your-database)
   - [3. Create Vue app](#3-create-vue-app)
-  - [4. Set up AI tooling](#4-optional-set-up-ai-tooling)
+  - [4. (Optional) Set up AI tooling](#4-optional-set-up-ai-tooling)
   - [5. Install Supabase client library](#5-install-supabase-client-library)
   - [6. Declare Supabase environment variables](#6-declare-supabase-environment-variables)
   - [7. Create the Supabase client](#7-create-the-supabase-client)
   - [8. Query data from the app](#8-query-data-from-the-app)
   - [9. Start the app](#9-start-the-app)
+
 - [Auth](#auth)
   - [1. About authentication and authorization](#1-about-authentication-and-authorization)
   - [2. The Supabase ecosystem](#2-the-supabase-ecosystem)
@@ -19,6 +22,27 @@ To use Supabase, you need to connect it to a framework. In this instance I will 
   - [4. Providers](#4-providers)
   - [5. Pricing](#5-pricing)
   - [6. Next steps](#6-next-steps)
+
+- [Import data into Supabase](#import-data-into-supabase)
+  - [1. How to import data into Supabase](#1-how-to-import-data-into-supabase)
+    - [Option 1: CSV import via Supabase dashboard](#option-1-csv-import-via-supabase-dashboard)
+    - [Option 2: Bulk import using pgloader](#option-2-bulk-import-using-pgloader)
+    - [Option 3: Using Postgres copy command](#option-3-using-postgres-copy-command)
+    - [Option 4: Using the Supabase API](#option-4-using-the-supabase-api)
+  - [2. Preparing to import data](#2-preparing-to-import-data)
+    - [Step 1: Back up your data](#step-1-back-up-your-data)
+    - [Step 2: Increase statement timeouts](#step-2-increase-statement-timeouts)
+    - [Step 3: Estimate your required disk size](#step-3-estimate-your-required-disk-size)
+    - [Step 4: Disable triggers](#step-4-disable-triggers)
+    - [Step 5: Rebuild indices after data import is complete](#step-5-rebuild-indices-after-data-import-is-complete)
+
+- [Upload and serve static files using Storage](#upload-and-serve-static-files-using-storage)
+  - [1. Key features](#1-key-features)
+  - [2. Get started](#2-get-started)
+  - [3. Examples](#3-examples)
+  - [4. Resources](#4-resources)
+
+- [Explore drop-in UI components for your Supabase app](#explore-drop-in-ui-components-for-your-supabase-app)
 
 
 # Use Supabase with Vue
@@ -44,7 +68,7 @@ to install agent skills: `npx skills add supabase/agent-skills`
 ### Why set up AI tooling, and when to use which
 You want to setup AI tooling when you want to give AI context about your project
 **agent skills** so AI can produce more accurate, reliable code using Supabase patterns
-**MCP server** so AI can inspect your schema and act on your projects behalf
+**MCP server** so AI can inspect your schema and act on your project's behalf
 
 ## 5. Install Supabase client library
 navigate to the created Vue app and run: `npm install @supabase/supabase-js`
@@ -61,7 +85,7 @@ to interact with data in database tables, you use the client libraries that wrap
 
 ## 7. Create the Supabase client
 >npm init vue@latest scaffolds a TypeScript project by default. If you chose a JavaScript-only project, use a .js extension instead and drop the type import.
-Create a `/src/lib` directory in your vue app. create file called `supabaseClient.ts`. Put code below in there
+Create a `/src/lib` directory in your Vue app. create a file called `supabaseClient.ts`. Put code below in there
 ```
 import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
@@ -155,3 +179,33 @@ Once you've covered the basics, the following guides will help with other cases 
 - [Supabase Auth multi-factor authentication](https://supabase.com/docs/guides/auth/auth-mfa)
 - [JSON Web Token (JWT)](https://supabase.com/docs/guides/auth/jwts)
 - [Auth Hooks](https://supabase.com/docs/guides/auth)
+
+# Import data into Supabase
+## 1. How to import data into Supabase
+### Option 1: CSV import via Supabase dashboard
+---
+### Option 2: Bulk import using pgloader
+---
+### Option 3: Using Postgres copy command
+---
+### Option 4: Using the Supabase API
+---
+## 2. Preparing to import data
+### Step 1: Back up your data
+---
+### Step 2: Increase statement timeouts
+---
+### Step 3: Estimate your required disk size
+---
+### Step 4: Disable triggers
+---
+### Step 5: Rebuild indices after data import is complete
+
+# Upload and *serve* static files using storage
+## 1. Key features
+## 2. Get started
+## 3. Examples
+## 4. Resources
+
+# Explore drop-in UI components for your Supabase app
+[ Explore drop-in UI components for your Supabase app](https://supabase.com/library)
