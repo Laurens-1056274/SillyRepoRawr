@@ -3,11 +3,13 @@ import { onMounted, ref } from 'vue'
 
 import { supabase } from './lib/supabaseClient'
 
+ // give Instrument typing
 type Instrument = {
   id: number
   name: string
 }
 
+// checks if instruments load correctly
 const instruments = ref<Instrument[]>([])
 const error = ref<string | null>(null)
 
@@ -25,9 +27,10 @@ async function getInstruments() {
 onMounted(() => {
   getInstruments()
 })
-</script>
 
-<template>
+</script>
+<!--if error, display error, else display instrument all instrument names in instruments -->
+<template> 
   <p v-if="error">Error loading instruments: {{ error }}</p>
   <ul v-else>
     <li v-for="instrument in instruments" :key="instrument.id">{{ instrument.name }}</li>

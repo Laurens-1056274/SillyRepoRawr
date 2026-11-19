@@ -182,30 +182,118 @@ Once you've covered the basics, the following guides will help with other cases 
 
 # Import data into Supabase
 ## 1. How to import data into Supabase
+There are multiple ways to store data into Supabase. Which one you use depens on data size and app requirements
 ### Option 1: CSV import via Supabase dashboard
+It's generally better suited for smaller datasets abd quick data import. Size limit is 100MB
+Consider using a different method such as pgloader for lage-scale data imports
+### How to use it
+**1:** Navigate to the relevant table in the table editor (second option on vertical navbar on the left)
+
+**2:** Click on + New table (for new, empty projects) or Insert (for existing tables), then choose Import Data from CSV and follow the on-screen instructions to upload your CSV file
+
 ---
 ### Option 2: Bulk import using pgloader
+pgloader is a powerful tool for efficiently importing data into a Postgres database which supports a wide range of
+source database engines(for example MySQL).
+### How to use it
+1: [Install pgloader](https://pgloader.readthedocs.io/en/latest/install.html) on your local machine/server.
+first download the latest development build:
+```
+curl -L -o pgloader.jar \ 
+https://github.com/dimitri/pgloader/releases/download/v4-dev/pgloader.jar
+```
+And then run it:
+```
+java -jar pgloader.jar --version
+java -jar pgloader.jar SOURCE TARGET
+java -jar pgloader.jar my.load
+```
+2: Create a configuration file (e.g., `config.load`) that specefies the source data and the target Supabase database.
+Below a example (customize the source and the Supabase database URL and options to fit your specific use case):
+```
+LOAD DATABASE
+    FROM sourcedb://USER:PASSWORD@HOST/SOURCE_DB
+    INTO postgres://postgres.xxxx:password@xxxx.pooler.supabase.com:6543/postgres
+ALTER SCHEMA 'public' OWNER TO 'postgres';
+set wal_buffers = '64MB', max_wal_senders = 0, statement_timeout = 0, work_mem to '2GB';
+```
+`wal buffers` allocates megabytes (MB) of memory for write-ahead logging buffers.
+larger value => improve write performance by caching more data in memory before writing it to disk.
+usefull for for example data import opertation to speed up writing transaction logs
+
+`max_wal_senders` set this to 0 to disable replication connections.
+This is done during the data import process to prevent replication-related conflicts and issues
+
+`statement_timeout` is set to 0, which means it's disabled, allowing SQL statements to run without a time limit.
+if it was for example 60000, it has 60 seconds for each statement (60000 miliseconds) before it automatically cansels
+
+`work_mem` is set to '2GB', allocating 2 GB of memory for query operations. This enhances the performance of complex queries by allowing larger in-memory datasets.
+Setting this to for example 4GB would make this faster IF 2GB is running out of memory
+
 ---
 ### Option 3: Using Postgres copy command
+Read more about [Bulk data loading](https://supabase.com/docs/guides/database/tables#bulk-data-loading)
+
 ---
 ### Option 4: Using the Supabase API
+The Supabase API allows you to programmatically import data into your tables
+This way is usefull for when you need to automate data imports. [see API guide](https://supabase.com/docs/guides/api)
+
 ---
 ## 2. Preparing to import data
+Large data imports can affect  your database performance. failed imports can cause data corruption
 ### Step 1: Back up your data
+Backups help you restore data if something goes wrong (duhh). Databases on pro,team and enterprise plans
+do this automatically on schedule, [but you can  aslo take your own backup ](https://supabase.com/docs/guides/platform/backups)
+
 ---
 ### Step 2: Increase statement timeouts
+When importing large datasets, you may encounter timeouts. [To address this increase the statement timeout](https://supabase.com/docs/guides/database/postgres/timeouts)
+
+<img src="image_folder/something_to_address.webp" alt="Something to address" width="200">
+
 ---
 ### Step 3: Estimate your required disk size
+Large datasets consume disc space. If you know how big your database is going to be, you can change the size in project database settings
+(4th option vertical navbar on the left called: database. then press settings, and go to Disk managment )
+
 ---
 ### Step 4: Disable triggers
+When importing large datasets, temporarely disable triggers to speed up import progress
+To disable and renable triggers, see code below
+```
+-- Disable triggers on a specific table
+ALTER TABLE table_name DISABLE TRIGGER ALL;
+
+-- To re-enable triggers
+ALTER TABLE table_name ENABLE TRIGGER ALL;
+```
+
 ---
 ### Step 5: Rebuild indices after data import is complete
-
+Indexing is crucial for query performance (it for example avoids scanning unnecessary data), but building indiced while imporing can take a lot of time.
+Consider (re)building indices AFTER the data import is complete. see code below how to build a index after data import
+`create index index_name on table_name (column_name);`
 # Upload and *serve* static files using storage
 ## 1. Key features
+- **Multi Protocol** S3 compatible storage, RESTful API, TUS [resumable uploads](https://supabase.com/docs/guides/storage/uploads/resumable-uploads)
+- **Global CDN** *serve* your assets with fast performance from over 285 cities worldwid
+- **Image Optimization** resize, compress and transform media files with built in image processing
+- **Fine-grained Acces Control** Manage file permissions with row-level security and custom policies
+- **Multiple Buket Types** Specialized storage solutions for different use cases
 ## 2. Get started
+Choose the bucket type that fits your use case:
+- [Files buckets](https://supabase.com/docs/guides/storage/quickstart)
+- [Ananytics buckets](https://supabase.com/docs/guides/storage/analytics/introduction)
+- [Vector buckets](https://supabase.com/docs/guides/storage/vector/introduction)
 ## 3. Examples
+Working sample projects for common Storage integration patterns:
+- [Storage templates and examples](https://github.com/supabase/supabase/tree/master/examples/storage)
+- [Resumable Uploads with Uppy](https://github.com/supabase/supabase/tree/master/examples/storage/resumable-upload-uppy)
 ## 4. Resources
+Source code and REST API reference for the Storage service:
+- [Supabase Storage API](https://github.com/supabase/storage)
+- [OpenAPI Spec](https://supabase.github.io/storage/)
 
 # Explore drop-in UI components for your Supabase app
 [ Explore drop-in UI components for your Supabase app](https://supabase.com/library)
