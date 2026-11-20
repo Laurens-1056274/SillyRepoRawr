@@ -2,6 +2,10 @@
 To use Supabase, you need to connect it to a framework. In this instance I will use Vue
 
 # Table of Contents
+- [How to Pull database schema](#how-to-pull-database-schema)
+  - [Sign in to Supabase CLI](#sign-in-to-supabase-cli)
+  - [Link your project](#link-your-project)
+
 - [Use Supabase with Vue](#use-supabase-with-vue)
   - [1. Create Supabase project](#1-create-supabase-project)
   - [2. Set up your database](#2-set-up-your-database)
@@ -41,6 +45,18 @@ To use Supabase, you need to connect it to a framework. In this instance I will 
   - [4. Resources](#4-resources)
 
 - [Explore drop-in UI components for your Supabase app](#explore-drop-in-ui-components-for-your-supabase-app)
+# How to Pull database schema
+Important: When installing the Supabase CLI using npm install supabase --save-dev, you must prefix CLI commands with npx.
+## Sign in to Supabase CLI
+run: `supabase login` in terminal
+## Link your project
+See code below how to pull your database schema to your local project. [Read this for detailed instructions](https://supabase.com/docs/guides/local-development/database-migrations#link-your-project)
+```
+supabase link --project-ref <project-id>
+# You can get <project-id> from your project's dashboard URL: https://supabase.com/dashboard/project/<project-id>
+supabase db pull --remote
+supabase db reset
+```
 # Use Supabase with Vue
 ## 1. create Supabase project
 visit: https://supabase.com/dashboard/org/dgcczgqsjcnkmofmjczf
